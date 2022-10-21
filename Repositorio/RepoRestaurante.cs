@@ -5,9 +5,8 @@ namespace Trabalho.Repositorio
 {
     public static class RepoRestaurante
     {
-        public static Restaurante Create(Juridica pessoa, Restaurante instancia)
+        public static Restaurante Create(Restaurante instancia)
         {
-            instancia.IdPessoa = pessoa.Id;
             instancia.Id = FakeDB<Restaurante>.Lista.Count == 0 ? 0 : FakeDB<Restaurante>.Lista.Last().Id + 1;
             FakeDB<Restaurante>.Lista.Add(instancia);
             return FakeDB<Restaurante>.Lista.Last();
@@ -18,9 +17,9 @@ namespace Trabalho.Repositorio
             return FakeDB<Restaurante>.Lista.Find(instancia => instancia.Id == id);
         }
 
-        public static List<Restaurante> ReadAll(Juridica? pessoa)
+        public static List<Restaurante> ReadAll(long? idPessoa)
         {
-            if (pessoa != null) return FakeDB<Restaurante>.Lista.FindAll(i => i.IdPessoa == pessoa.Id);
+            if (idPessoa != null) return FakeDB<Restaurante>.Lista.FindAll(i => i.IdPessoa == idPessoa);
             return FakeDB<Restaurante>.Lista;
         }
 

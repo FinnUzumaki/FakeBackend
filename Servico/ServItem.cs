@@ -7,7 +7,7 @@ namespace Trabalho.Servico
     {
         public static List<Item> Browse(Restaurante? restaurante = null)
         {
-            return RepoItem.ReadAll(restaurante);
+            return RepoItem.ReadAll(restaurante?.Id);
         }
         public static Item? Read(long id)
         {
@@ -17,9 +17,9 @@ namespace Trabalho.Servico
         {
             return RepoItem.Update(id, instancia);
         }
-        public static Item Add(Restaurante restaurante, Item instancia)
+        public static Item Add(Item instancia)
         {
-            return RepoItem.Create(restaurante, instancia);
+            return RepoItem.Create(instancia);
         }
         public static Item? Delete(long id)
         {

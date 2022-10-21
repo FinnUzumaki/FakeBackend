@@ -7,7 +7,7 @@ namespace Trabalho.Servico
     {
         public static List<Pedido> Browse(Fisica? pessoa = null)
         {
-            return RepoPedido.ReadAll(pessoa);
+            return RepoPedido.ReadAll(pessoa?.Id);
         }
         public static Pedido? Read(long id)
         {
@@ -17,9 +17,9 @@ namespace Trabalho.Servico
         {
             return RepoPedido.Update(id, instancia);
         }
-        public static Pedido Add(Fisica pessoa, Pedido instancia)
+        public static Pedido Add(Pedido instancia)
         {
-            return RepoPedido.Create(pessoa, instancia);
+            return RepoPedido.Create(instancia);
         }
         public static Pedido? Delete(long id)
         {

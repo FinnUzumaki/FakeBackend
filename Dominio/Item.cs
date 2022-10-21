@@ -40,8 +40,9 @@
             set => imagem = value;
         }
 
-        public Item(string nome, string descricao, int valor, string imagem)
+        public Item(long idRestaurante, string nome, string descricao, int valor, string imagem)
         {
+            IdRestaurante = idRestaurante;
             Nome = nome;
             Descricao = descricao;
             Valor = valor;

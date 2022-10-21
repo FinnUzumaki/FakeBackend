@@ -16,6 +16,9 @@
             set => idPessoa = value;
         }
 
-        public Pedido() { }
+        public Pedido(long idPessoa)
+        {
+            IdPessoa = idPessoa;
+        }
     }
 }

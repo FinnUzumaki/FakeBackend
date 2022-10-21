@@ -33,8 +33,9 @@
             get => descricao;
             set => descricao = value;
         }
-        public Restaurante(string endereco, string nome, string descricao)
+        public Restaurante(long idPessoa, string endereco, string nome, string descricao)
         {
+            IdPessoa = idPessoa;
             Endereco = endereco;
             Nome = nome;
             Descricao = descricao;

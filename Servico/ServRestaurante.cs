@@ -7,7 +7,7 @@ namespace Trabalho.Servico
     {
         public static List<Restaurante> Browse(Juridica? pessoa = null)
         {
-            return RepoRestaurante.ReadAll(pessoa);
+            return RepoRestaurante.ReadAll(pessoa?.Id);
         }
         public static Restaurante? Read(long id)
         {
@@ -17,9 +17,9 @@ namespace Trabalho.Servico
         {
             return RepoRestaurante.Update(id, instancia);
         }
-        public static Restaurante Add(Juridica pessoa, Restaurante instancia)
+        public static Restaurante Add(Restaurante instancia)
         {
-            return RepoRestaurante.Create(pessoa, instancia);
+            return RepoRestaurante.Create(instancia);
         }
         public static Restaurante? Delete(long id)
         {

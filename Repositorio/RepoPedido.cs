@@ -5,9 +5,8 @@ namespace Trabalho.Repositorio
 {
     public static class RepoPedido
     {
-        public static Pedido Create(Fisica pessoa, Pedido instancia)
+        public static Pedido Create(Pedido instancia)
         {
-            instancia.IdPessoa = pessoa.Id;
             instancia.Id = FakeDB<Pedido>.Lista.Count == 0 ? 0 : FakeDB<Pedido>.Lista.Last().Id + 1;
             FakeDB<Pedido>.Lista.Add(instancia);
             return FakeDB<Pedido>.Lista.Last();
@@ -18,9 +17,9 @@ namespace Trabalho.Repositorio
             return FakeDB<Pedido>.Lista.Find(instancia => instancia.Id == id);
         }
 
-        public static List<Pedido> ReadAll(Fisica? pessoa)
+        public static List<Pedido> ReadAll(long? idPessoa)
         {
-            if (pessoa != null) return FakeDB<Pedido>.Lista.FindAll(i => i.IdPessoa == pessoa.Id);
+            if (idPessoa != null) return FakeDB<Pedido>.Lista.FindAll(i => i.IdPessoa == idPessoa);
             return FakeDB<Pedido>.Lista;
         }
 
