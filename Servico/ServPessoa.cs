@@ -9,11 +9,15 @@ namespace Trabalho.Servico
         {
             return RepoPessoa<TPessoa>.ReadAll();
         }
-        public static TPessoa? Read(long id)
+        public static TPessoa? Read(ulong id)
         {
             return RepoPessoa<TPessoa>.Read(id);
         }
-        public static TPessoa? Edit(long id, TPessoa instancia)
+        public static TPessoa? Read(string nome)
+        {
+            return RepoPessoa<TPessoa>.Read(nome);
+        }
+        public static TPessoa? Edit(ulong id, TPessoa instancia)
         {
             return RepoPessoa<TPessoa>.Update(id, instancia);
         }
@@ -21,7 +25,7 @@ namespace Trabalho.Servico
         {
             return RepoPessoa<TPessoa>.Create(instancia);
         }
-        public static TPessoa? Delete(long id)
+        public static TPessoa? Delete(ulong id)
         {
             return RepoPessoa<TPessoa>.Delete(id);
         }

@@ -12,18 +12,22 @@ namespace Trabalho.Repositorio
             return FakeDB<Restaurante>.Lista.Last();
         }
 
-        public static Restaurante? Read(long id)
+        public static Restaurante? Read(ulong id)
         {
             return FakeDB<Restaurante>.Lista.Find(instancia => instancia.Id == id);
         }
+        public static Restaurante? Read(string nome)
+        {
+            return FakeDB<Restaurante>.Lista.Find(instancia => instancia.Nome == nome);
+        }
 
-        public static List<Restaurante> ReadAll(long? idPessoa)
+        public static List<Restaurante> ReadAll(ulong? idPessoa)
         {
             if (idPessoa != null) return FakeDB<Restaurante>.Lista.FindAll(i => i.IdPessoa == idPessoa);
             return FakeDB<Restaurante>.Lista;
         }
 
-        public static Restaurante? Update(long id, Restaurante instancia)
+        public static Restaurante? Update(ulong id, Restaurante instancia)
         {
             Restaurante? original = Read(id);
             if (original != null)
@@ -33,7 +37,7 @@ namespace Trabalho.Repositorio
             }
             return original;
         }
-        public static Restaurante? Delete(long id)
+        public static Restaurante? Delete(ulong id)
         {
             Restaurante? original = Read(id);
             if (original != null) FakeDB<Restaurante>.Lista.Remove(original);

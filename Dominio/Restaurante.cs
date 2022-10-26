@@ -2,18 +2,18 @@
 {
     public class Restaurante
     {
-        private long id;
-        private long idPessoa;
+        private ulong id;
+        private ulong idPessoa;
         private string endereco;
         private string nome;
         private string descricao;
 
-        public long Id
+        public ulong Id
         {
             get => id;
             set => id = value;
         }
-        public long IdPessoa
+        public ulong IdPessoa
         {
             get => idPessoa;
             set => idPessoa = value;
@@ -33,9 +33,9 @@
             get => descricao;
             set => descricao = value;
         }
-        public Restaurante(long idPessoa, string endereco, string nome, string descricao)
+        public Restaurante(Juridica pessoa ,string endereco, string nome, string descricao)
         {
-            IdPessoa = idPessoa;
+            IdPessoa = pessoa.Id;
             Endereco = endereco;
             Nome = nome;
             Descricao = descricao;

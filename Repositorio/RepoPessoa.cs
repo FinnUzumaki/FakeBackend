@@ -12,9 +12,13 @@ namespace Trabalho.Repositorio
             return FakeDB<TPessoa>.Lista.Last();
         }
 
-        public static TPessoa? Read(long id)
+        public static TPessoa? Read(ulong id)
         {
             return FakeDB<TPessoa>.Lista.Find(instancia => instancia.Id == id);
+        }
+        public static TPessoa? Read(string nome)
+        {
+            return FakeDB<TPessoa>.Lista.Find(instancia => instancia.Nome == nome);
         }
 
         public static List<TPessoa> ReadAll()
@@ -22,7 +26,7 @@ namespace Trabalho.Repositorio
             return FakeDB<TPessoa>.Lista;
         }
 
-        public static TPessoa? Update(long id, TPessoa instancia)
+        public static TPessoa? Update(ulong id, TPessoa instancia)
         {
             TPessoa? original = Read(id);
             if(original != null)
@@ -32,7 +36,7 @@ namespace Trabalho.Repositorio
             }
                 return original;
         }
-        public static TPessoa? Delete(long id)
+        public static TPessoa? Delete(ulong id)
         {
             TPessoa? original = Read(id);
             if (original != null) FakeDB<TPessoa>.Lista.Remove(original);

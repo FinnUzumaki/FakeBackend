@@ -9,11 +9,11 @@ namespace Trabalho.Servico
         {
             return RepoRestaurante.ReadAll(pessoa?.Id);
         }
-        public static Restaurante? Read(long id)
+        public static Restaurante? Read(ulong id)
         {
             return RepoRestaurante.Read(id);
         }
-        public static Restaurante? Edit(long id, Restaurante instancia)
+        public static Restaurante? Edit(ulong id, Restaurante instancia)
         {
             return RepoRestaurante.Update(id, instancia);
         }
@@ -21,7 +21,7 @@ namespace Trabalho.Servico
         {
             return RepoRestaurante.Create(instancia);
         }
-        public static Restaurante? Delete(long id)
+        public static Restaurante? Delete(ulong id)
         {
             return RepoRestaurante.Delete(id);
         }

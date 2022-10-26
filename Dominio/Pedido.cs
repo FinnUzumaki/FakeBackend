@@ -2,23 +2,30 @@
 {
     public class Pedido
     {
-        private long id;
-        private long idPessoa;
+        private ulong id;
+        private ulong idPessoa;
+        private List<ulong> itens;
 
-        public long Id
+        public ulong Id
         {
             get => id;
             set => id = value;
         }
-        public long IdPessoa
+        public ulong IdPessoa
         {
             get => idPessoa;
             set => idPessoa = value;
         }
 
-        public Pedido(long idPessoa)
+        public Pedido(Fisica pessoa, List<Item> itens)
         {
-            IdPessoa = idPessoa;
+            IdPessoa = pessoa.Id;
+            pessoa.Pedidos++;
+            this.itens = new List<ulong>(itens.Count());
+            foreach(Item item in itens)
+            {
+                this.itens.Add(item.Id);
+            }
         }
     }
 }

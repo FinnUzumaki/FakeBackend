@@ -2,19 +2,19 @@
 {
     public class Item
     {
-        private long id;
-        private long idRestaurante;
+        private ulong id;
+        private ulong idRestaurante;
         private string nome;
         private string descricao;
-        private int valor;
+        private float valor;
         private string imagem;
 
-        public long Id
+        public ulong Id
         {
             get => id;
             set => id = value;
         }
-        public long IdRestaurante
+        public ulong IdRestaurante
         {
             get => idRestaurante;
             set => idRestaurante = value;
@@ -29,7 +29,7 @@
             get => descricao;
             set => descricao = value;
         }
-        public int Valor
+        public float Valor
         {
             get => valor;
             set => valor = value;
@@ -40,9 +40,9 @@
             set => imagem = value;
         }
 
-        public Item(long idRestaurante, string nome, string descricao, int valor, string imagem)
+        public Item(Restaurante restaurante, string nome, string descricao, float valor, string imagem)
         {
-            IdRestaurante = idRestaurante;
+            IdRestaurante = restaurante.Id;
             Nome = nome;
             Descricao = descricao;
             Valor = valor;

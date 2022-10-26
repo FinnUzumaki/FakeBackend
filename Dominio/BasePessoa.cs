@@ -2,7 +2,7 @@
 {
     public abstract class BasePessoa
     {
-        private long id;
+        private ulong id;
         private string nome;
         private string email;
         private DateOnly dataNascimento;
@@ -10,7 +10,7 @@
         private string cidade;
         private string senha;
 
-        public long Id
+        public ulong Id
         {
             get => id;
             set => id = value;

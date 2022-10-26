@@ -9,11 +9,11 @@ namespace Trabalho.Servico
         {
             return RepoPedido.ReadAll(pessoa?.Id);
         }
-        public static Pedido? Read(long id)
+        public static Pedido? Read(ulong id)
         {
             return RepoPedido.Read(id);
         }
-        public static Pedido? Edit(long id, Pedido instancia)
+        public static Pedido? Edit(ulong id, Pedido instancia)
         {
             return RepoPedido.Update(id, instancia);
         }
@@ -21,7 +21,7 @@ namespace Trabalho.Servico
         {
             return RepoPedido.Create(instancia);
         }
-        public static Pedido? Delete(long id)
+        public static Pedido? Delete(ulong id)
         {
             return RepoPedido.Delete(id);
         }
