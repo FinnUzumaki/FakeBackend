@@ -59,23 +59,29 @@ namespace Trabalho.Consumo
             if (pessoa == null) { Console.WriteLine("Pessoa não encontrada."); Console.ReadKey(true); }
             else
             {
+                bool onLoop = true;
+                bool removido = false;
                 Console.WriteLine();
-                switch (Program.Menu("Pessoa encontrada, suas informações são:\n\n" +
-                $"{pessoa.Id}\t{pessoa.Nome}\t{pessoa.Email}\t{pessoa.DataNascimento.ToShortDateString()}\t{pessoa.Telefone}\t{pessoa.Cidade}\t{pessoa.Senha}\t{pessoa.Cpf}\t{pessoa.Pedidos}\n\n" +
-                "O que deseja fazer?", new string[] { "Editar", "Remover", "Mostrar Pedidos", "Voltar" }))
+                do
                 {
-                    case 0:
-                        Ademir.EditarFisica(pessoa);
-                        break;
-                    case 1:
-                        Ademir.RemoverFisica(pessoa);
-                        break;
-                    case 2:
-                        Ademir.MostrarPedidos(pessoa);
-                        break;
-                    default:
-                        return;
-                }
+                    switch (Program.Menu("Pessoa encontrada, suas informações são:\n\n" +
+                    $"{pessoa.Id}\t{pessoa.Nome}\t{pessoa.Email}\t{pessoa.DataNascimento.ToShortDateString()}\t{pessoa.Telefone}\t{pessoa.Cidade}\t{pessoa.Senha}\t{pessoa.Cpf}\t{pessoa.Pedidos}\n\n" +
+                    "O que deseja fazer?", new string[] { "Editar", "Remover", "Mostrar Pedidos", "Voltar" }))
+                    {
+                        case 0:
+                            Ademir.EditarFisica(pessoa);
+                            break;
+                        case 1:
+                            Ademir.RemoverFisica(pessoa, out removido);
+                            break;
+                        case 2:
+                            Ademir.MostrarPedidos(pessoa);
+                            break;
+                        default:
+                            onLoop = false;
+                            break;
+                    }
+                } while (onLoop && !removido);
             }
         }
 
@@ -138,16 +144,34 @@ namespace Trabalho.Consumo
 
             Fisica editado = new Fisica(temp[0] ?? pessoa.Nome, temp[1] ?? pessoa.Email, line == null ? pessoa.DataNascimento : DataNascimento, temp[2] ?? pessoa.Telefone, temp[3] ?? pessoa.Cidade, temp[4] ?? pessoa.Senha, temp[5]??pessoa.Senha);
 
+            /////////DEBUGGING/////////////////////////////
             Console.WriteLine($"{editado.Id}\t{editado.Nome}\t{editado.Email}\t{editado.DataNascimento.ToShortDateString()}\t{editado.Telefone}\t{editado.Cidade}\t{editado.Senha}\t{editado.Cpf}\t{editado.Pedidos}\n\n");
             Console.ReadKey(true);
-            
+            /////////DEBUGGING/////////////////////////////
+
             ServPessoa<Fisica>.Edit(pessoa.Id, editado);
+            
+            if (editado == pessoa) Console.WriteLine("Informações atualizadas com sucesso.");
+            else Console.WriteLine("Houve um erro ao atualizar as informações.");
+            
+            Console.ReadKey(true);
 
         }
     
-        public static void RemoverFisica(Fisica pessoa)
+        public static void RemoverFisica(Fisica pessoa, out bool removido)
         {
-
+            switch(Program.Menu($"Tem certeza que deseja remover {pessoa.Nome}?", new string[] {"Sim", "Não"}))
+            {
+                case 0:
+                    if (ServPessoa<Fisica>.Delete(pessoa.Id) == pessoa) Console.WriteLine("Usuário removido com sucesso.");
+                    else Console.WriteLine("A remoção não pode ser concluida.");
+                    Console.ReadKey(true);
+                    break;
+                default:
+                    removido = false;
+                    return;
+            }
+            removido = true;
         }
 
         public static void MostrarPedidos(Fisica pessoa)
