@@ -26,16 +26,14 @@ namespace Trabalho.Consumo
 
         public static void Listar()
         {
-            string[] pessoas = new string[ServPessoa<Fisica>.Browse().Count + 2];
-            pessoas[0] = "Voltar";
-            for (int i = 0; i < ServPessoa<Fisica>.Browse().Count; i++)
-                pessoas[i+1] = 
-                    $"Id: {ServPessoa<Fisica>.Browse()[i].Id}\t" +
-                    $"Nome: {ServPessoa<Fisica>.Browse()[i].Nome}";
-            pessoas[ServPessoa<Fisica>.Browse().Count + 1] = "Voltar";
-            int index = Program.Menu("Lista de todas as pessoas, selecione uma para mais informações.", pessoas);
-            if (index == ServPessoa<Fisica>.Browse().Count + 1 || index == 0) return;
-            Achar(ServPessoa<Fisica>.Browse()[index-1]);
+            List<string> pessoas = new List<string>(ServPessoa<Fisica>.Browse().Count);
+            foreach (Fisica pessoa in ServPessoa<Fisica>.Browse())
+                pessoas.Add(
+                    $"Id:{pessoa.Id}\t" +
+                    $"Nome:{pessoa.Nome}");
+            int index = Program.Menu("Lista de todas as pessoas, selecione uma para mais informações.", pessoas.ToArray());
+            if (index == -1) return;
+            Achar(ServPessoa<Fisica>.Browse()[index]);
         }
 
         public static void Achar(Fisica? pessoa = null)
@@ -46,6 +44,8 @@ namespace Trabalho.Consumo
                 string? nome, line;
                 switch (Program.Menu("Procurar por nome ou Id?", new string[] { "Nome", "Id" }))
                 {
+                    case -1:
+                        return;
                     case 0:
                         Console.WriteLine("Digite o nome da pessoa que deseja achar.");
                         nome = Console.ReadLine();
@@ -83,7 +83,7 @@ namespace Trabalho.Consumo
                 $"Senha:\t{pessoa.Senha}\n" +
                 $"Cpf:\t{pessoa.Cpf}\n" +
                 $"NumPed:\t{pessoa.Pedidos}\n\n" +
-                "O que deseja fazer?", new string[] { "Editar", "Remover", "Mostrar Pedidos", "Adicionar Pedido", "Voltar" }))
+                "O que deseja fazer?", new string[] { "Editar", "Remover", "Mostrar Pedidos", "Adicionar Pedido" }))
                 {
                     case 0:
                         pessoa = AdmFisica.Editar(pessoa);
@@ -176,16 +176,16 @@ namespace Trabalho.Consumo
     
         private static void Remover(Fisica pessoa, out bool removido)
         {
-            switch(Program.Menu($"Tem certeza que deseja remover {pessoa.Nome}?", new string[] {"Sim", "Não"}))
+            switch(Program.Menu($"Tem certeza que deseja remover {pessoa.Nome}?", new string[] {"Não","Sim"}))
             {
-                case 0:
+                default:
+                    removido = false;
+                    return;
+                case 1:
                     if (ServPessoa<Fisica>.Delete(pessoa.Id) == pessoa) Console.WriteLine("Usuário removido com sucesso.");
                     else Console.WriteLine("A remoção não pode ser concluida.");
                     Console.ReadKey(true);
                     break;
-                default:
-                    removido = false;
-                    return;
             }
             removido = true;
         }
@@ -212,7 +212,7 @@ namespace Trabalho.Consumo
             bool? terminado = false;
             do
             {
-
+                int index = 0;
                 float total = 0;
                 string line = itens.Count == 0 ? "Nenhum item adicionado." : "";
                 foreach (Item item in itens)
@@ -227,31 +227,45 @@ namespace Trabalho.Consumo
                         foreach (Restaurante restaurante in ServRestaurante.Browse())
                             restaurantes.Add(restaurante.Nome);
 
-                        Restaurante escolhido = ServRestaurante.Browse()[Program.Menu("Escolha o restaurante para mostrar os itens.", restaurantes.ToArray())];
+                        bool repeat;
+                        Restaurante? escolhido = null;
+                        do
+                        {
+                            repeat = false;
+                            index = Program.Menu("Escolha o restaurante para mostrar os itens.", restaurantes.ToArray());
+                            if (index == -1) break;
+                            escolhido = ServRestaurante.Browse()[index];
 
-                        List<string> temp = new List<string>(ServItem.Browse(escolhido).Count);
-                        foreach (Item item in ServItem.Browse(escolhido))
-                            temp.Add(
-                                $"Nome:{item.Nome}\t" +
-                                $"Descr:{item.Descricao}\t" +
-                                $"R${item.Valor}\t" +
-                                $"Imagem:{item.Imagem}");
+                            List<string> temp = new List<string>(ServItem.Browse(escolhido).Count);
+                            foreach (Item item in ServItem.Browse(escolhido))
+                                temp.Add(
+                                    $"Nome:{item.Nome}\t" +
+                                    $"Descr:{item.Descricao}\t" +
+                                    $"R${item.Valor}\t" +
+                                    $"Imagem:{item.Imagem}");
 
-                        itens.Add(ServItem.Browse(escolhido)[Program.Menu("Selecione o item para adicionar no pedido", temp.ToArray())]);
+                            index = Program.Menu("Selecione o item para adicionar no pedido", temp.ToArray());
+                            if (index == -1) repeat = true;
+                        } while (repeat);
+                        if (index == -1) break;
+                
+                        itens.Add(ServItem.Browse(escolhido)[index]);
 
                         break;
                     case 1:
                         List<string> temp2 = new List<string>(itens.Count);
                         foreach (Item item in itens)
                             temp2.Add($"{item.Nome}, {item.Valor}");
-                        itens.RemoveAt(Program.Menu("Escolha o item a ser removido.", temp2.ToArray()));
+                        index = Program.Menu("Escolha o item a ser removido.", temp2.ToArray());
+                        if (index == -1) break;
+                        itens.RemoveAt(index);
                         break;
                     case 2:
-                        if(itens.Count == 0) terminado = Program.Menu("A lista está vazia, deseja cancelar o pedido?", new string[] { "Sim", "Não" }) == 0 ? null : false;
-                        else terminado = Program.Menu("Tem certeza de que deseja terminar o pedido?", new string[] { "Sim", "Não" }) == 0 ? true : false;
+                        if(itens.Count == 0) terminado = Program.Menu("A lista está vazia, deseja cancelar o pedido?", new string[] { "Não", "Sim" }) == 1 ? null : false;
+                        else terminado = Program.Menu("Tem certeza de que deseja terminar o pedido?", new string[] { "Não", "Sim" }) == 1 ? true : false;
                         break;
                     default:
-                        terminado = Program.Menu("Tem certeza de que deseja cancelar o pedido?", new string[] { "Sim", "Não" }) == 0 ? null : false;
+                        terminado = Program.Menu("Tem certeza de que deseja cancelar o pedido?", new string[] { "Não", "Sim" }) == 1 ? null : false;
                         break;
                 }
             } while (terminado == false);

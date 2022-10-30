@@ -12,17 +12,14 @@ namespace Trabalho.Consumo
     {
         public static void Listar()
         {
-            string[] pessoas = new string[ServPessoa<Juridica>.Browse().Count + 2];
-            pessoas[0] = "Voltar";
-            for (int i = 0; i < ServPessoa<Juridica>.Browse().Count; i++)
-                pessoas[i + 1] =
-                    $"Id: {ServPessoa<Juridica>.Browse()[i].Id}\t" +
-                    $"Nome: {ServPessoa<Juridica>.Browse()[i].Nome}\t" +
-                    $"Restaurantes: {ServPessoa<Juridica>.Browse()[i].Restaurantes}";
-            pessoas[ServPessoa<Juridica>.Browse().Count + 1] = "Voltar";
-            int index = Program.Menu("Lista de todas as empresas, selecione uma para mais informações.", pessoas);
-            if (index == ServPessoa<Juridica>.Browse().Count + 1 || index == 0) return;
-            Achar(ServPessoa<Juridica>.Browse()[index - 1]);
+            List<string> pessoas = new List<string>(ServPessoa<Juridica>.Browse().Count);
+            foreach (Juridica pessoa in ServPessoa<Juridica>.Browse())
+                pessoas.Add(
+                    $"Id:{pessoa.Id}\t" +
+                    $"Nome:{pessoa.Nome}");
+            int index = Program.Menu("Lista de todas as pessoas, selecione uma para mais informações.", pessoas.ToArray());
+            if (index == -1) return;
+            Achar(ServPessoa<Juridica>.Browse()[index]);
         }
 
         public static void Achar(Juridica? pessoa = null)
@@ -33,6 +30,8 @@ namespace Trabalho.Consumo
                 string? nome, line;
                 switch (Program.Menu("Procurar por nome ou Id?", new string[] { "Nome", "Id" }))
                 {
+                    case -1:
+                        return;
                     case 0:
                         Console.WriteLine("Digite o nome da empresa que deseja achar.");
                         nome = Console.ReadLine();
@@ -70,7 +69,7 @@ namespace Trabalho.Consumo
                 $"Senha:\t{pessoa.Senha}\n" +
                 $"Cnpj:\t{pessoa.Cnpj}\n" +
                 $"NumRes:\t{pessoa.Restaurantes}\n\n" +
-                "O que deseja fazer?", new string[] { "Editar", "Remover", "Mostrar Restaurantes", "Adicionar Restaurante", "Remover Restaurante", "Voltar" }))
+                "O que deseja fazer?", new string[] { "Editar", "Remover", "Mostrar Restaurantes", "Adicionar Restaurante", "Remover Restaurante" }))
                 {
                     case 0:
                         pessoa = AdmJuridica.Editar(pessoa);
@@ -125,7 +124,7 @@ namespace Trabalho.Consumo
                         if (ServRestaurante.Browse(pessoa).Count == 0)
                             switch (Program.Menu("A empresa não tem restaurantes, deseja adicioná-los ou deletar a empresa?", new string[] { "Adicionar", "Deletar" }))
                             {
-                                case 0:
+                                default:
                                     repeat = true;
                                     break;
                                 case 1:
@@ -189,9 +188,9 @@ namespace Trabalho.Consumo
 
         private static void Remover(Juridica pessoa, out bool removido)
         {
-            switch (Program.Menu($"Tem certeza que deseja remover {pessoa.Nome}?", new string[] { "Sim", "Não" }))
+            switch (Program.Menu($"Tem certeza que deseja remover {pessoa.Nome}?", new string[] { "Não", "Sim" }))
             {
-                case 0:
+                case 1:
                     if (ServPessoa<Juridica>.Delete(pessoa.Id) == pessoa) Console.WriteLine("Usuário removido com sucesso.");
                     else Console.WriteLine("A remoção não pode ser concluida.");
                     Console.ReadKey(true);
@@ -256,7 +255,7 @@ namespace Trabalho.Consumo
                         if (ServItem.Browse(restaurante).Count == 0)
                             switch (Program.Menu("O restaurante não tem itens, deseja adicioná-los ou deletar o restaurante?", new string[] { "Adicionar", "Deletar" }))
                             {
-                                case 0:
+                                default:
                                     repeat = true;
                                     break;
                                 case 1:
@@ -277,8 +276,7 @@ namespace Trabalho.Consumo
         }
         private static void RemoverRestaurante(Juridica pessoa, out bool removido)
         {
-            List<string> temp = new List<string>(ServRestaurante.Browse(pessoa).Count+1);
-            temp.Add("Cancelar");
+            List<string> temp = new List<string>(ServRestaurante.Browse(pessoa).Count);
             string entry;
             foreach (Restaurante restaurante in ServRestaurante.Browse(pessoa))
             {
@@ -302,12 +300,12 @@ namespace Trabalho.Consumo
             do
             {
                 int resposta = Program.Menu("Selecione o restaurante a ser deletado", temp.ToArray());
-                if (resposta == 0) { removido = false; return; }
-                Restaurante selecionado = ServRestaurante.Browse()[resposta - 1];
+                if (resposta == -1) { removido = false; return; }
+                Restaurante selecionado = ServRestaurante.Browse()[resposta];
 
-                switch (Program.Menu($"Tem certeza que deseja deletar {selecionado.Nome}?", new string[] { "Sim", "Não" }))
+                switch (Program.Menu($"Tem certeza que deseja deletar {selecionado.Nome}?", new string[] { "Não", "Sim" }))
                 {
-                    case 0:
+                    case 1:
                         repeat = false;
                         if (ServRestaurante.Delete(selecionado.Id) == selecionado) Console.WriteLine("Restaurante deletado com sucesso.");
                         else Console.WriteLine("Houve um erro ao deletar o restaurante.");
@@ -316,7 +314,7 @@ namespace Trabalho.Consumo
                         if(ServRestaurante.Browse(pessoa).Count == 0) 
                             switch(Program.Menu("Esse era o ultimo restaurante da empresa, deseja adicionar outro ou deletar a empresa?", new string[] {"Adicionar", "Deletar"}))
                             {
-                                case 0:
+                                default:
                                     AdicionarRestaurante(pessoa);
                                     break;
                                 case 1:
@@ -325,7 +323,7 @@ namespace Trabalho.Consumo
                                     return;
                             }
                         break;
-                    case 1:
+                    default:
                         repeat = true;
                         break;
                 }

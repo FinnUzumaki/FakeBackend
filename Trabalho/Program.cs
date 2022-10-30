@@ -11,13 +11,13 @@ class Program
         while(true)
         {
             bool onSecond = false;
-            switch(Menu("O que deseja ver?", new string[] { "Pessoas Fisicas", "Pedidos", "Pessoas Juridicas", "Restaurantes", "Itens", "Sair" }))
+            switch(Menu("Enter para selecionar uma opção ou apagar para retornar.\nO que deseja ver?", new string[] { "Pessoas Fisicas", "Pedidos", "Pessoas Juridicas", "Restaurantes", "Itens" }))
             {
                 case 0:
                     onSecond = true;
                     do
                     {
-                        switch (Menu("Menu de Pessoas Fisicas, o que deseja fazer?", new string[] { "Listar", "Achar", "Adicionar", "Voltar" }))
+                        switch (Menu("Menu de Pessoas Fisicas, o que deseja fazer?", new string[] { "Listar", "Achar", "Adicionar"}))
                         {
                             case 0:
                                 AdmFisica.Listar();
@@ -39,7 +39,7 @@ class Program
                     onSecond = true;
                     do
                     {
-                        switch (Menu("Menu de Pedidos, o que deseja fazer?", new string[] { "Listar", "Achar", "Voltar" }))
+                        switch (Menu("Menu de Pedidos, o que deseja fazer?", new string[] { "Listar", "Achar"}))
                         {
                             case 0:
                                 AdmPedido.Listar();
@@ -58,7 +58,7 @@ class Program
                     onSecond = true;
                     do
                     {
-                        switch (Menu("Menu de Pessoas Juridicas, o que deseja fazer?", new string[] { "Listar", "Achar", "Adicionar", "Voltar" }))
+                        switch (Menu("Menu de Pessoas Juridicas, o que deseja fazer?", new string[] { "Listar", "Achar", "Adicionar"}))
                         {
                             case 0:
                                 AdmJuridica.Listar();
@@ -80,7 +80,7 @@ class Program
                     onSecond = true;
                     do
                     {
-                        switch (Menu("Menu de Restaurantes, o que deseja fazer?", new string[] { "Listar", "Achar", "Voltar" }))
+                        switch (Menu("Menu de Restaurantes, o que deseja fazer?", new string[] { "Listar", "Achar" }))
                         {
                             case 0:
                                 break;
@@ -97,7 +97,7 @@ class Program
                     onSecond = true;
                     do
                     {
-                        switch (Menu("Menu de Itens, o que deseja fazer?", new string[] { "Listar", "Achar", "Voltar" }))
+                        switch (Menu("Menu de Itens, o que deseja fazer?", new string[] { "Listar", "Achar"}))
                         {
                             case 0:
                                 break;
@@ -136,9 +136,9 @@ class Program
             }
 
             chave = Console.ReadKey(true).Key;
-        } while (chave != ConsoleKey.Enter);
+        } while (chave != ConsoleKey.Enter && chave != ConsoleKey.Backspace);
 
         Console.Clear();
-        return selecionada;
+        return (chave == ConsoleKey.Backspace ? -1 : selecionada);
     }
 }

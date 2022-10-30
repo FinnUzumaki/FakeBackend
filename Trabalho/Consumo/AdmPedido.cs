@@ -8,19 +8,16 @@ namespace Trabalho.Consumo
     {
         public static void Listar()
         {
-            string[] pedidos = new string[ServPedido.Browse().Count + 2];
-            pedidos[0] = "Voltar";
-            for (int i = 0; i < ServPedido.Browse().Count; i++)
-                pedidos[i+1] =
-                    $"Id:{ServPedido.Browse()[i].Id}\t" +
-                    $"IdPessoa:{ServPedido.Browse()[i].IdPessoa}\t" +
-                    $"Itens:{ServPedido.Browse()[i].Itens.Count}\t" +
-                    $"Total:{ServPedido.Browse()[i].Total}";
-            pedidos[ServPedido.Browse().Count + 1] = "Voltar";
-            int index = Program.Menu("Lista de todos os pedidos, selecione um para mais informações.", pedidos);
-            if (index == ServPedido.Browse().Count + 1 || index == 0) return;
-
-            Achar(ServPedido.Browse()[index - 1]);
+            List<string> pedidos = new List<string>(ServPedido.Browse().Count);
+            foreach (Pedido pedido in ServPedido.Browse())
+                pedidos.Add(
+                    $"Id:{pedido.Id}\t" +
+                    $"IdPessoa:{pedido.IdPessoa}\t" +
+                    $"Itens:{pedido.Itens.Count}\t" +
+                    $"Total:{pedido.Total}");
+            int index = Program.Menu("Lista de todas as pessoas, selecione uma para mais informações.", pedidos.ToArray());
+            if (index == -1) return;
+            Achar(ServPedido.Browse()[index]);
         }
 
         public static void Achar(Pedido? pedido = null)
@@ -62,7 +59,7 @@ namespace Trabalho.Consumo
                 }
                 switch (Program.Menu("As informações do pedido selecionado são:\n\n" +
                 line + '\n' +
-                "O que deseja fazer?", new string[] { "Editar", "Remover", "Voltar" }))
+                "O que deseja fazer?", new string[] { "Editar", "Remover" }))
                 {
                     case 0:
                         pedido = AdmPedido.Editar(pedido);
@@ -84,6 +81,7 @@ namespace Trabalho.Consumo
             bool? terminado = false;
             do
             {
+                int index = 0;
                 float total = 0;
                 string line = itens.Count == 0 ? "Nenhum item adicionado.\n" : "";
                 foreach (Item item in itens)
@@ -98,30 +96,43 @@ namespace Trabalho.Consumo
                         foreach (Restaurante restaurante in ServRestaurante.Browse())
                             restaurantes.Add(restaurante.Nome);
 
-                        Restaurante escolhido = ServRestaurante.Browse()[Program.Menu("Escolha o restaurante para mostrar os itens.", restaurantes.ToArray())];
+                        bool repeat = false;
+                        Restaurante? escolhido = null;
+                        do
+                        {
+                            repeat = false;
+                            index = Program.Menu("Escolha o restaurante para mostrar os itens.", restaurantes.ToArray());
+                            if (index == -1) break;
+                            escolhido = ServRestaurante.Browse()[index];
 
-                        List<string> temp = new List<string>(ServItem.Browse(escolhido).Count);
-                        foreach (Item item in ServItem.Browse(escolhido))
-                            temp.Add(
-                                $"Nome:{item.Nome}\t" +
-                                $"Descr:{item.Descricao}\t" +
-                                $"R${item.Valor}\t" +
-                                $"Imagem:{item.Imagem}");
+                            List<string> temp = new List<string>(ServItem.Browse(escolhido).Count);
+                            foreach (Item item in ServItem.Browse(escolhido))
+                                temp.Add(
+                                    $"Nome:{item.Nome}\t" +
+                                    $"Descr:{item.Descricao}\t" +
+                                    $"R${item.Valor}\t" +
+                                    $"Imagem:{item.Imagem}");
 
-                        itens.Add(ServItem.Browse(escolhido)[Program.Menu("Selecione o item para adicionar no pedido", temp.ToArray())]);
+                            index = Program.Menu("Selecione o item para adicionar no pedido", temp.ToArray());
+                            if (index == -1) repeat = true;
+                        } while (repeat);
+                        if (index == -1) break;
+                        itens.Add(ServItem.Browse(escolhido)[index]);
 
                         break;
                     case 1:
                         List<string> temp2 = new List<string>(itens.Count);
                         foreach (Item item in itens)
                             temp2.Add($"{item.Nome}, {item.Valor}");
-                        itens.RemoveAt(Program.Menu("Escolha o item a ser removido.", temp2.ToArray()));
+                        index = Program.Menu("Escolha o item a ser removido.", temp2.ToArray());
+                        if(index == -1) break;
+                        itens.RemoveAt(index);
                         break;
                     case 2:
-                        terminado = Program.Menu("Tem certeza de que deseja terminar a edição?", new string[] { "Sim", "Não" }) == 0 ? true : false;
+                        terminado = Program.Menu("Tem certeza de que deseja terminar a edição?", new string[] { "Não", "Sim" }) == 1 ? true : false;
                         break;
                     default:
-                        terminado = Program.Menu("Tem certeza de que deseja cancelar a edição?", new string[] { "Sim", "Não" }) == 0 ? null : false;
+                        terminado = Program.Menu("Tem certeza de que deseja cancelar a edição?", new string[] { "Não", "Sim" }) == 1 ? null : false;
                         break;
                 }
             } while (terminado == false);
@@ -139,9 +150,9 @@ namespace Trabalho.Consumo
 
         private static void Remover(Pedido pedido, out bool removido)
         {
-            switch (Program.Menu($"Tem certeza que deseja remover o pedido?", new string[] { "Sim", "Não" }))
+            switch (Program.Menu($"Tem certeza que deseja remover o pedido?", new string[] { "Não", "Sim" }))
             {
-                case 0:
+                case 1:
                     Fisica? p = ServPessoa<Fisica>.Read(pedido.IdPessoa);
                     if (p != null) p.Pedidos--;
                     if (ServPedido.Delete(pedido.Id) == pedido) Console.WriteLine("Pedido removido com sucesso.");
