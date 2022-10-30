@@ -6,9 +6,7 @@ class Program
 {
     public static void Main(string[] args)
     {
-        
-        //cria instancias de teste
-        Ademir.Popular();
+        AdmFisica.Popular();
 
         while(true)
         {
@@ -22,13 +20,13 @@ class Program
                         switch (Menu("Menu de Pessoas Fisicas, o que deseja fazer?", new string[] { "Listar", "Achar", "Adicionar", "Voltar" }))
                         {
                             case 0:
-                                Ademir.ListarFisica();
+                                AdmFisica.Listar();
                                 break;
                             case 1:
-                                Ademir.AcharFisica();
+                                AdmFisica.Achar();
                                 break;
                             case 2:
-                                Ademir.AdicionarFisica();
+                                AdmFisica.Adicionar();
                                 break;
                             default:
                                 onSecond = false;
@@ -41,15 +39,13 @@ class Program
                     onSecond = true;
                     do
                     {
-                        switch (Menu("Menu de Pedidos, o que deseja fazer?", new string[] { "Listar", "Achar", "Adicionar", "Remover", "Editar", "Voltar" }))
+                        switch (Menu("Menu de Pedidos, o que deseja fazer?", new string[] { "Listar", "Achar", "Voltar" }))
                         {
                             case 0:
+                                AdmPedido.Listar();
                                 break;
                             case 1:
-                                break;
-                            case 2:
-                                break;
-                            case 3:
+                                AdmPedido.Achar();
                                 break;
                             default:
                                 onSecond = false;
@@ -62,16 +58,16 @@ class Program
                     onSecond = true;
                     do
                     {
-                        switch (Menu("Menu de Pessoas Juridicas, o que deseja fazer?", new string[] { "Listar", "Achar", "Adicionar", "Remover", "Editar", "Voltar" }))
+                        switch (Menu("Menu de Pessoas Juridicas, o que deseja fazer?", new string[] { "Listar", "Achar", "Adicionar", "Voltar" }))
                         {
                             case 0:
+                                AdmJuridica.Listar();
                                 break;
                             case 1:
+                                AdmJuridica.Achar();
                                 break;
                             case 2:
-                                break;
-                            case 3:
-                                break;
+                                //AdmJuridica.Adicionar();
                             default:
                                 onSecond = false;
                                 break;
@@ -83,15 +79,11 @@ class Program
                     onSecond = true;
                     do
                     {
-                        switch (Menu("Menu de Restaurantes, o que deseja fazer?", new string[] { "Listar", "Achar", "Adicionar", "Remover", "Editar", "Voltar" }))
+                        switch (Menu("Menu de Restaurantes, o que deseja fazer?", new string[] { "Listar", "Achar", "Voltar" }))
                         {
                             case 0:
                                 break;
                             case 1:
-                                break;
-                            case 2:
-                                break;
-                            case 3:
                                 break;
                             default:
                                 onSecond = false;
@@ -104,15 +96,11 @@ class Program
                     onSecond = true;
                     do
                     {
-                        switch (Menu("Menu de Itens, o que deseja fazer?", new string[] { "Listar", "Achar", "Adicionar", "Remover", "Editar", "Voltar" }))
+                        switch (Menu("Menu de Itens, o que deseja fazer?", new string[] { "Listar", "Achar", "Voltar" }))
                         {
                             case 0:
                                 break;
                             case 1:
-                                break;
-                            case 2:
-                                break;
-                            case 3:
                                 break;
                             default:
                                 onSecond = false;

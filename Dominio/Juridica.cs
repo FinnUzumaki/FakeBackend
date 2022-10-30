@@ -3,6 +3,13 @@
     public class Juridica : BasePessoa
     {
         private string cnpj;
+        private int restaurantes;
+
+        public int Restaurantes
+        {
+            get => restaurantes;
+            set => restaurantes = value;
+        }
 
         public string Cnpj
         {

@@ -5,9 +5,17 @@ namespace Trabalho.Servico
 {
     public static class ServItem
     {
-        public static List<Item> Browse(Restaurante? restaurante = null)
+        public static List<Item> Browse()
         {
-            return RepoItem.ReadAll(restaurante?.Id);
+            return RepoItem.ReadAll();
+        }
+        public static List<Item> Browse(Restaurante restaurante)
+        {
+            return RepoItem.ReadAll(restaurante.Cardapio);
+        }
+        public static List<Item> Browse(Pedido pedido)
+        {
+            return RepoItem.ReadAll(pedido.Itens);
         }
         public static Item? Read(ulong id)
         {

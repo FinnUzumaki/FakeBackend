@@ -17,10 +17,12 @@ namespace Trabalho.Repositorio
             return FakeDB<Item>.Lista.Find(instancia => instancia.Id == id);
         }
 
-        public static List<Item> ReadAll(ulong? idRestaurante)
+        public static List<Item> ReadAll(List<ulong>? itens = null)
         {
-            if (idRestaurante != null) return FakeDB<Item>.Lista.FindAll(i => i.IdRestaurante == idRestaurante);
-            return FakeDB<Item>.Lista;
+            if(itens == null) return FakeDB<Item>.Lista;
+            List<Item> lista = new List<Item>(itens.Count);
+            foreach (ulong id in itens) lista.Add(FakeDB<Item>.Lista.Find(instancia => instancia.Id == id));
+            return lista;
         }
 
         public static Item? Update(ulong id, Item instancia)
