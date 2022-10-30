@@ -53,90 +53,95 @@ namespace Trabalho.Consumo
             }
 
             Console.Clear();
-            if (pessoa == null) { Console.WriteLine("Empresa não encontrada."); Console.ReadKey(true); }
-            else
+            if (pessoa == null) { Console.WriteLine("Empresa não encontrada."); Console.ReadKey(true); return; }
+
+            bool onLoop = true;
+            bool removido = false;
+            Console.WriteLine();
+            do
             {
-                bool onLoop = true;
-                bool removido = false;
-                Console.WriteLine();
-                do
+                switch (Program.Menu("As informações da Empresa selecionada são:\n\n" +
+                $"Id:\t{pessoa.Id}\n" +
+                $"Nome:\t{pessoa.Nome}\n" +
+                $"Email:\t{pessoa.Email}\n" +
+                $"Inaug.:\t{pessoa.DataNascimento.ToShortDateString()}\n" +
+                $"Tel.:\t{pessoa.Telefone}\n" +
+                $"Cidade:\t{pessoa.Cidade}\n" +
+                $"Senha:\t{pessoa.Senha}\n" +
+                $"Cnpj:\t{pessoa.Cnpj}\n" +
+                $"NumRes:\t{pessoa.Restaurantes}\n\n" +
+                "O que deseja fazer?", new string[] { "Editar", "Remover", "Mostrar Restaurantes", "Adicionar Restaurante", "Remover Restaurante", "Voltar" }))
                 {
-                    switch (Program.Menu("As informações da Empresa selecionada são:\n\n" +
-                    $"Id:\t{pessoa.Id}\n" +
-                    $"Nome:\t{pessoa.Nome}\n" +
-                    $"Email:\t{pessoa.Email}\n" +
-                    $"Inaug.:\t{pessoa.DataNascimento.ToShortDateString()}\n" +
-                    $"Tel.:\t{pessoa.Telefone}\n" +
-                    $"Cidade:\t{pessoa.Cidade}\n" +
-                    $"Senha:\t{pessoa.Senha}\n" +
-                    $"Cnpj:\t{pessoa.Cnpj}\n" +
-                    $"NumRes:\t{pessoa.Restaurantes}\n\n" +
-                    "O que deseja fazer?", new string[] { "Editar", "Remover", "Mostrar Restaurantes", "Adicionar Restaurante", "Voltar" }))
-                    {
-                        case 0:
-                            //pessoa = AdmJuridica.Editar(pessoa);
-                            break;
-                        case 1:
-                            //AdmJuridica.Remover(pessoa, out removido);
-                            break;
-                        case 2:
-                            //AdmJuridica.MostrarRestaurantes(pessoa);
-                            break;
-                        case 3:
-                            //AdmJuridica.AdicionarRestaurante(pessoa);
-                            break;
-                        default:
-                            onLoop = false;
-                            break;
-                    }
-                } while (onLoop && !removido);
-            }
+                    case 0:
+                        pessoa = AdmJuridica.Editar(pessoa);
+                        break;
+                    case 1:
+                        AdmJuridica.Remover(pessoa, out removido);
+                        break;
+                    case 2:
+                        AdmJuridica.MostrarRestaurantes(pessoa);
+                        break;
+                    case 3:
+                        AdmJuridica.AdicionarRestaurante(pessoa);
+                        break;
+                    case 4:
+                        AdmJuridica.RemoverRestaurante(pessoa, out removido);
+                        break;
+                    default:
+                        onLoop = false;
+                        break;
+                }
+            } while (onLoop && !removido);
+
         }
-        ///////////////////////////////////////////////
-        //AINDA NÃO TESTADO, NÃO VAI FUNCIONAR/////////
-        ///////////////////////////////////////////////
-        /*public static void Adicionar()
+        public static void Adicionar()
         { 
             bool valido = true;
             string[] temp = new string[] { "Nome: ", "Email: ", "Inauguração: ", "Telefone: ", "Cidade: ", "Senha: ", "Cnpj: " };
-            DateOnly DataNascimento;
+            DateOnly DataInauguração;
             for (int i = 0; i < temp.Length; i++)
             {
                 Console.Clear();
                 Console.WriteLine("Para adicionar uma empresa são necessárias algumas informações.");
                 Console.Write(temp[i]);
                 temp[i] = Console.ReadLine();
-                if (string.IsNullOrEmpty(temp[i])) valido = false;
+                valido &= !string.IsNullOrEmpty(temp[i]);
             }
-            valido &= DateOnly.TryParse(temp[2], out DataNascimento);
+            valido &= DateOnly.TryParse(temp[2], out DataInauguração);
 
-            string[] temp2 = new string[] { "Nome: ", "Endereço: ", "Descriçao: " };
-            for(int i = 0; i < temp.Length; i++)
-            {
-                Console.Clear();
-                Console.WriteLine("Para cadastrar uma empresa ela deve ter um restaurante. Coloque as informações referente a ele.");
-                Console.Write(temp2[i]);
-                if(string.IsNullOrEmpty(temp2[i])) valido = false;
-            }
-
-            string[] temp3 = new string[] { "Nome: ", "Descrição: ", "Valor: ", "Imagem: " };
-            for(int i = 0; i < temp3.Length; i++)
-            {
-                Console.Clear();
-                Console.WriteLine("Um restaurante precisa de um cardápio, para o primeiro restaurante será necessário criar um novo cardápio.");
-                switch(Program.Menu("Podem ser escolhidos itens já existentes de outros restaurantes ou podem ser criados novos.", new string[] { "Escolher existentes", "Criar Novos" }))
-                {
-                }
-            }
             Console.Clear();
             if (valido)
             {
-                Juridica p = new(temp[0], temp[1], DataNascimento, temp[3], temp[4], temp[5], temp[6]);
-                if (ServPessoa<Juridica>.Add(p) == p) Console.WriteLine("Usuário adicionado com sucesso.");
-                else Console.WriteLine("Houve algum problema ao adicionar o novo usuário.");
+                Juridica pessoa = new(temp[0], temp[1], DataInauguração, temp[3], temp[4], temp[5], temp[6]);
+                if (ServPessoa<Juridica>.Add(pessoa) == pessoa)
+                {
+                    Console.WriteLine("Empresa adicionada com sucesso. Agora adicione um restaurante para a empresa.");
+                    Console.ReadKey(true);
+                    bool repeat = false;
+                    do
+                    {
+                        AdicionarRestaurante(pessoa);
+
+                        if (ServRestaurante.Browse(pessoa).Count == 0)
+                            switch (Program.Menu("A empresa não tem restaurantes, deseja adicioná-los ou deletar a empresa?", new string[] { "Adicionar", "Deletar" }))
+                            {
+                                case 0:
+                                    repeat = true;
+                                    break;
+                                case 1:
+                                    repeat = false;
+                                    ServPessoa<Juridica>.Delete(pessoa.Id);
+                                    break;
+                            }
+                    } while (repeat);
+                }
+                else Console.WriteLine("Houve algum problema ao adicionar a nova empresa.");
             }
-            else Console.WriteLine("As informações dadas não são validas.");
-            Console.ReadKey(true);
+            else
+            {
+                Console.WriteLine("As informações dadas não são validas.");
+                Console.ReadKey(true);
+            }
         }
 
         private static Juridica Editar(Juridica pessoa)
@@ -201,14 +206,21 @@ namespace Trabalho.Consumo
         private static void MostrarRestaurantes(Juridica pessoa)
         {
             if (ServRestaurante.Browse(pessoa).Count == 0) Console.WriteLine("Nenhum Restaurante.");
-            foreach (Restaurante Restaurante in ServRestaurante.Browse(pessoa))
+            foreach (Restaurante restaurante in ServRestaurante.Browse(pessoa))
             {
-                Console.WriteLine($"Id do Restaurante: {Restaurante.Id}");
-                foreach (ulong id in Restaurante.Cardapio)
+                Console.WriteLine(
+                    $"Id:\t\t{restaurante.Id}\n" +
+                    $"Nome:\t\t{restaurante.Nome}\n" +
+                    $"Endereço:\t{restaurante.Endereco}\n" +
+                    $"Descricao:\t{restaurante.Descricao}\n" +
+                    $"Cardápio:");
+                foreach (Item item in ServItem.Browse(restaurante))
                 {
-                    Item? item = ServItem.Read(id);
                     if (item != null)
-                        Console.WriteLine($"\tId:{item.Id}\tNome:{item.Nome}\tDescr:{item.Descricao}\tR${item.Valor}");
+                        Console.WriteLine($"\tId:{item.Id}\t" +
+                            $"Nome:{item.Nome}\t" +
+                            $"Descr:{item.Descricao}\t" +
+                            $"R${item.Valor}");
                     else Console.WriteLine("Item não encontrado");
                 }
             }
@@ -217,61 +229,108 @@ namespace Trabalho.Consumo
 
         private static void AdicionarRestaurante(Juridica pessoa)
         {
-            List<Item> itens = new List<Item>();
-            bool? terminado = false;
+            bool valido = true;
+            string[] temp = new string[] { "Nome: ", "Endereço: ", "Descrição: "};
+            for (int i = 0; i < temp.Length; i++)
+            {
+                Console.Clear();
+                Console.WriteLine("Para adicionar um restaurante são necessárias algumas informações.");
+                Console.Write(temp[i]);
+                temp[i] = Console.ReadLine();
+                valido &= !string.IsNullOrEmpty(temp[i]);
+            }
+
+            Console.Clear();
+            if (valido)
+            {
+
+                Restaurante restaurante = new(pessoa, temp[0], temp[1], temp[2]);
+                if (ServRestaurante.Add(restaurante) == restaurante)
+                {
+                    Console.WriteLine("Restaurante adicionado com sucesso. Agora o restaurante precisa de um cardapio.");
+                    Console.ReadKey(true);
+                    bool repeat = false;
+                    do
+                    {
+                        AdmRestaurante.AdicionarItem(restaurante);
+                        if (ServItem.Browse(restaurante).Count == 0)
+                            switch (Program.Menu("O restaurante não tem itens, deseja adicioná-los ou deletar o restaurante?", new string[] { "Adicionar", "Deletar" }))
+                            {
+                                case 0:
+                                    repeat = true;
+                                    break;
+                                case 1:
+                                    repeat = false;
+                                    ServRestaurante.Delete(restaurante.Id);
+                                    break;
+                            }
+                    } while (repeat);
+
+                }
+                else Console.WriteLine("Houve algum problema ao adicionar o novo restaurante.");
+            }
+            else
+            {
+                Console.WriteLine("As informações dadas não são validas.");
+                Console.ReadKey(true);
+            }
+        }
+        private static void RemoverRestaurante(Juridica pessoa, out bool removido)
+        {
+            List<string> temp = new List<string>(ServRestaurante.Browse(pessoa).Count+1);
+            temp.Add("Cancelar");
+            string entry;
+            foreach (Restaurante restaurante in ServRestaurante.Browse(pessoa))
+            {
+                entry =
+                    $"Id:\t\t{restaurante.Id}\n" +
+                    $"Nome:\t{restaurante.Nome}\n" +
+                    $"Endereço:\t{restaurante.Endereco}\n" +
+                    $"Cardápio:\n";
+                foreach (Item item in ServItem.Browse(restaurante))
+                {
+                    entry +=
+                        $"\tId:{item.Id}\t" +
+                        $"Nome:{item.Nome}\t" +
+                        $"Descrição:{item.Descricao}\t" +
+                        $"Valor:{item.Valor}\t" +
+                        $"Imagem:{item.Imagem}";
+                }
+                temp.Add(entry);
+            }
+            bool repeat = false;
             do
             {
+                int resposta = Program.Menu("Selecione o restaurante a ser deletado", temp.ToArray());
+                if (resposta == 0) { removido = false; return; }
+                Restaurante selecionado = ServRestaurante.Browse()[resposta - 1];
 
-                float total = 0;
-                string line = itens.Count == 0 ? "Nenhum item adicionado." : "";
-                foreach (Item item in itens)
-                {
-                    line += $"{item.Nome}, R${item.Valor:0.##}\n";
-                    total += item.Valor;
-                }
-                switch (Program.Menu(line + "\nTotal = R$" + total.ToString("0.##") + "\nSelecione o que deseja fazer.", new string[] { "Adicionar item", "Remover item", "Terminar Restaurante", "Cancelar" }))
+                switch (Program.Menu($"Tem certeza que deseja deletar {selecionado.Nome}?", new string[] { "Sim", "Não" }))
                 {
                     case 0:
-                        string[] restaurantes = new string[ServRestaurante.Browse().Count];
-                        for (int i = 0; i < ServRestaurante.Browse().Count; i++) restaurantes[i] = ServRestaurante.Browse()[i].Nome;
+                        repeat = false;
+                        if (ServRestaurante.Delete(selecionado.Id) == selecionado) Console.WriteLine("Restaurante deletado com sucesso.");
+                        else Console.WriteLine("Houve um erro ao deletar o restaurante.");
+                        Console.ReadKey(true);
 
-                        Restaurante escolhido = ServRestaurante.Browse()[Program.Menu("Escolha o restaurante para mostrar os itens.", restaurantes)];
-
-                        string[] itensString = new string[ServItem.Browse(escolhido).Count];
-                        for (int i = 0; i < ServItem.Browse(escolhido).Count; i++)
-                            itensString[i] =
-                                $"Nome:{ServItem.Browse(escolhido)[i].Nome}\t" +
-                                $"Descr:{ServItem.Browse(escolhido)[i].Descricao}\t" +
-                                $"R${ServItem.Browse(escolhido)[i].Valor}\t" +
-                                $"Imagem:{ServItem.Browse(escolhido)[i].Imagem}";
-
-                        itens.Add(ServItem.Browse(escolhido)[Program.Menu("Selecione o item para adicionar no Restaurante", itensString)]);
-
+                        if(ServRestaurante.Browse(pessoa).Count == 0) 
+                            switch(Program.Menu("Esse era o ultimo restaurante da empresa, deseja adicionar outro ou deletar a empresa?", new string[] {"Adicionar", "Deletar"}))
+                            {
+                                case 0:
+                                    AdicionarRestaurante(pessoa);
+                                    break;
+                                case 1:
+                                    removido = true;
+                                    ServPessoa<Juridica>.Delete(pessoa.Id);
+                                    return;
+                            }
                         break;
                     case 1:
-                        string[] itensS = new string[itens.Count];
-                        for (int i = 0; i < itens.Count; i++) itensS[i] = $"{itens[i].Nome}, {itens[i].Valor}";
-                        itens.RemoveAt(Program.Menu("Escolha o item a ser removido.", itensS));
-                        break;
-                    case 2:
-                        if (itens.Count == 0) terminado = Program.Menu("A lista está vazia, deseja cancelar o Restaurante?", new string[] { "Sim", "Não" }) == 0 ? null : false;
-                        else terminado = Program.Menu("Tem certeza de que deseja terminar o Restaurante?", new string[] { "Sim", "Não" }) == 0 ? true : false;
-                        break;
-                    default:
-                        terminado = Program.Menu("Tem certeza de que deseja cancelar o Restaurante?", new string[] { "Sim", "Não" }) == 0 ? null : false;
+                        repeat = true;
                         break;
                 }
-            } while (terminado == false);
-
-            if (terminado == true)
-            {
-                Restaurante p = new Restaurante(pessoa, itens);
-                if (ServRestaurante.Add(p) == p) Console.WriteLine("Restaurante criado com sucesso.");
-                else Console.WriteLine("Houve um erro ao concluir o Restaurante.");
-            }
-            else Console.WriteLine("Restaurante cancelado com sucesso.");
-
-            Console.ReadKey(true);
-        }*/
+            } while (repeat);
+            removido = false;
+        }
     }
 }

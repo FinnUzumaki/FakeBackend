@@ -3,6 +3,7 @@
     public class Item
     {
         private ulong id;
+        private ulong idRestaurante;
         private string nome;
         private string descricao;
         private float valor;
@@ -12,6 +13,11 @@
         {
             get => id;
             set => id = value;
+        }
+        public ulong IdRestaurante
+        {
+            get => idRestaurante;
+            set => idRestaurante = value;
         }
         public string Nome
         {
@@ -34,8 +40,9 @@
             set => imagem = value;
         }
 
-        public Item(string nome, string descricao, float valor, string imagem)
+        public Item(Restaurante restaurante, string nome, string descricao, float valor, string imagem)
         {
+            IdRestaurante = restaurante.Id;
             Nome = nome;
             Descricao = descricao;
             Valor = valor;

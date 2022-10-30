@@ -1,4 +1,5 @@
-﻿using Trabalho.Dominio;
+﻿using System.ComponentModel;
+using Trabalho.Dominio;
 using Trabalho.FakeDB;
 
 namespace Trabalho.Repositorio
@@ -15,6 +16,11 @@ namespace Trabalho.Repositorio
         public static Item? Read(ulong id)
         {
             return FakeDB<Item>.Lista.Find(instancia => instancia.Id == id);
+        }
+
+        public static List<Item> ReadAll(ulong id)
+        {
+            return FakeDB<Item>.Lista.FindAll(instancia => instancia.IdRestaurante == id);
         }
 
         public static List<Item> ReadAll(List<ulong>? itens = null)

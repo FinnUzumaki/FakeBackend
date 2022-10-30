@@ -11,11 +11,12 @@ namespace Trabalho.Consumo
         {
             for (int i = 0; i < 10; i++)
             {
-                
 
+                ServItem.Add(new Item(
                 ServRestaurante.Add(new Restaurante(
                     ServPessoa<Juridica>.Add(new Juridica("NomeJ" + i, "EmailJ" + i, new DateOnly(2022, 12, i + 1), "TelefoneJ" + i, "CidadeJ" + i, "SenhaJ" + i, "CnpJ" + i))
-                    ,new List<Item>() { ServItem.Add(new Item("NomeI" + i, "Eh um item", 1000.00f, "ibagem")) }, "NomeR" + i, "EnderecoR" + i, "Restaurante da pessoa juridica " + i));
+                    , "NomeR" + i, "EnderecoR" + i, "Restaurante da pessoa juridica " + i))
+                , "NomeI" + i, "Eh um item", 1000.00f, "ibagem"));
 
                 ServPedido.Add(new Pedido(
                     ServPessoa<Fisica>.Add(new Fisica("NomeF" + i, "EmailF" + i, new DateOnly(2000, 1, i + 1), "TelefoneF" + i, "CidadeF" + i, "SenhaF" + i, "CpF" + i))
@@ -39,11 +40,11 @@ namespace Trabalho.Consumo
 
         public static void Achar(Fisica? pessoa = null)
         {
-            if(pessoa == null)
+            if (pessoa == null)
             {
                 ulong id;
                 string? nome, line;
-                switch(Program.Menu("Procurar por nome ou Id?", new string[] { "Nome", "Id" }))
+                switch (Program.Menu("Procurar por nome ou Id?", new string[] { "Nome", "Id" }))
                 {
                     case 0:
                         Console.WriteLine("Digite o nome da pessoa que deseja achar.");
@@ -63,46 +64,45 @@ namespace Trabalho.Consumo
                         break;
                 }
             }
-            
+
             Console.Clear();
-            if (pessoa == null) { Console.WriteLine("Pessoa não encontrada."); Console.ReadKey(true); }
-            else
+            if (pessoa == null) { Console.WriteLine("Pessoa não encontrada."); Console.ReadKey(true); return; }
+
+            bool onLoop = true;
+            bool removido = false;
+            Console.WriteLine();
+            do
             {
-                bool onLoop = true;
-                bool removido = false;
-                Console.WriteLine();
-                do
+                switch (Program.Menu("As informações da pessoa selecionada são:\n\n" +
+                $"Id:\t{pessoa.Id}\n" +
+                $"Nome:\t{pessoa.Nome}\n" +
+                $"Email:\t{pessoa.Email}\n" +
+                $"Nasc.:\t{pessoa.DataNascimento.ToShortDateString()}\n" +
+                $"Tel.:\t{pessoa.Telefone}\n" +
+                $"Cidade:\t{pessoa.Cidade}\n" +
+                $"Senha:\t{pessoa.Senha}\n" +
+                $"Cpf:\t{pessoa.Cpf}\n" +
+                $"NumPed:\t{pessoa.Pedidos}\n\n" +
+                "O que deseja fazer?", new string[] { "Editar", "Remover", "Mostrar Pedidos", "Adicionar Pedido", "Voltar" }))
                 {
-                    switch (Program.Menu("As informações da pessoa selecionada são:\n\n" +
-                    $"Id:\t{pessoa.Id}\n" +
-                    $"Nome:\t{pessoa.Nome}\n" +
-                    $"Email:\t{pessoa.Email}\n" +
-                    $"Nasc.:\t{pessoa.DataNascimento.ToShortDateString()}\n" +
-                    $"Tel.:\t{pessoa.Telefone}\n" +
-                    $"Cidade:\t{pessoa.Cidade}\n" +
-                    $"Senha:\t{pessoa.Senha}\n" +
-                    $"Cpf:\t{pessoa.Cpf}\n" +
-                    $"NumPed:\t{pessoa.Pedidos}\n\n" +
-                    "O que deseja fazer?", new string[] { "Editar", "Remover", "Mostrar Pedidos", "Adicionar Pedido", "Voltar" }))
-                    {
-                        case 0:
-                            pessoa = AdmFisica.Editar(pessoa);
-                            break;
-                        case 1:
-                            AdmFisica.Remover(pessoa, out removido);
-                            break;
-                        case 2:
-                            AdmFisica.MostrarPedidos(pessoa);
-                            break;
-                        case 3:
-                            AdmFisica.AdicionarPedido(pessoa);
-                            break;
-                        default:
-                            onLoop = false;
-                            break;
-                    }
-                } while (onLoop && !removido);
-            }
+                    case 0:
+                        pessoa = AdmFisica.Editar(pessoa);
+                        break;
+                    case 1:
+                        AdmFisica.Remover(pessoa, out removido);
+                        break;
+                    case 2:
+                        AdmFisica.MostrarPedidos(pessoa);
+                        break;
+                    case 3:
+                        AdmFisica.AdicionarPedido(pessoa);
+                        break;
+                    default:
+                        onLoop = false;
+                        break;
+                }
+            } while (onLoop && !removido);
+
         }
 
         public static void Adicionar()
@@ -116,7 +116,7 @@ namespace Trabalho.Consumo
                 Console.WriteLine("Para adicionar um usuário são necessárias algumas informações.");
                 Console.Write(temp[i]);
                 temp[i] = Console.ReadLine();
-                if (string.IsNullOrEmpty(temp[i])) valido = false;
+                valido &= !string.IsNullOrEmpty(temp[i]);
             }
             valido &= DateOnly.TryParse(temp[2], out DataNascimento);
 
@@ -229,7 +229,7 @@ namespace Trabalho.Consumo
 
                         Restaurante escolhido = ServRestaurante.Browse()[Program.Menu("Escolha o restaurante para mostrar os itens.", restaurantes.ToArray())];
 
-                        List<string> temp = new List<string>(escolhido.Cardapio.Count);
+                        List<string> temp = new List<string>(ServItem.Browse(escolhido).Count);
                         foreach (Item item in ServItem.Browse(escolhido))
                             temp.Add(
                                 $"Nome:{item.Nome}\t" +

@@ -11,7 +11,7 @@ namespace Trabalho.Servico
         }
         public static List<Item> Browse(Restaurante restaurante)
         {
-            return RepoItem.ReadAll(restaurante.Cardapio);
+            return RepoItem.ReadAll(restaurante.Id);
         }
         public static List<Item> Browse(Pedido pedido)
         {

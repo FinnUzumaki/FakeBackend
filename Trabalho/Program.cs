@@ -67,7 +67,8 @@ class Program
                                 AdmJuridica.Achar();
                                 break;
                             case 2:
-                                //AdmJuridica.Adicionar();
+                                AdmJuridica.Adicionar();
+                                break;
                             default:
                                 onSecond = false;
                                 break;
@@ -131,7 +132,7 @@ class Program
 
             for (int i = 0; i < opcoes.Length; i++)
             {
-                Console.WriteLine(opcoes[i] + (selecionada == i ? "<" : ""));
+                Console.WriteLine((selecionada == i ? ">" : " ")+ opcoes[i]);
             }
 
             chave = Console.ReadKey(true).Key;

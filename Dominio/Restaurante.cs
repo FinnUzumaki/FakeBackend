@@ -7,7 +7,6 @@
         private string nome;
         private string endereco;
         private string descricao;
-        private List<ulong> cardapio;
 
         public ulong Id
         {
@@ -34,22 +33,13 @@
             get => descricao;
             set => descricao = value;
         }
-        public List<ulong> Cardapio
-        {
-            get => cardapio;
-        }
-        public Restaurante(Juridica pessoa, List<Item> itens, string nome, string endereco, string descricao)
+        public Restaurante(Juridica pessoa, string nome, string endereco, string descricao)
         {
             IdPessoa = pessoa.Id;
             pessoa.Restaurantes++;
             Nome = nome;
             Endereco = endereco;
             Descricao = descricao;
-            cardapio = new List<ulong>(itens.Count);
-            foreach(Item item in itens)
-            {
-                cardapio.Add(item.Id);
-            }
         }
     }
 }

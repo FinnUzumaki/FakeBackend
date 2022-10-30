@@ -16,9 +16,9 @@ namespace Trabalho.Consumo
                     $"IdPessoa:{ServPedido.Browse()[i].IdPessoa}\t" +
                     $"Itens:{ServPedido.Browse()[i].Itens.Count}\t" +
                     $"Total:{ServPedido.Browse()[i].Total}";
-            pedidos[ServPessoa<Fisica>.Browse().Count + 1] = "Voltar";
+            pedidos[ServPedido.Browse().Count + 1] = "Voltar";
             int index = Program.Menu("Lista de todos os pedidos, selecione um para mais informações.", pedidos);
-            if (index == ServPessoa<Fisica>.Browse().Count + 1 || index == 0) return;
+            if (index == ServPedido.Browse().Count + 1 || index == 0) return;
 
             Achar(ServPedido.Browse()[index - 1]);
         }
@@ -41,42 +41,41 @@ namespace Trabalho.Consumo
             }
 
             Console.Clear();
-            if (pedido == null) { Console.WriteLine("Pedido não encontrado."); Console.ReadKey(true); }
-            else
+            if (pedido == null) { Console.WriteLine("Pedido não encontrado."); Console.ReadKey(true); return; }
+
+            bool onLoop = true;
+            bool removido = false;
+            Console.WriteLine();
+            do
             {
-                bool onLoop = true;
-                bool removido = false;
-                Console.WriteLine();
-                do
+                string line = "";
+                line += $"Id:{pedido.Id}\tIdPessoa:{pedido.IdPessoa}\tTotal:{pedido.Total}\n";
+                foreach (ulong id in pedido.Itens)
                 {
-                    string line = "";
-                    line += $"Id:{pedido.Id}\tIdPessoa:{pedido.IdPessoa}\tTotal:{pedido.Total}\n";
-                    foreach (ulong id in pedido.Itens)
-                    {
-                        Item? item = ServItem.Read(id);
-                        if (item != null)
-                            line +=
-                                $"\tId:{item.Id}\t" +
-                                $"Nome:{item.Nome}\t" +
-                                $"Descr:{item.Descricao}\t" +
-                                $"R${item.Valor}\n";
-                    }
-                    switch (Program.Menu("As informações do pedido selecionado são:\n\n" +
-                    line + '\n' +
-                    "O que deseja fazer?", new string[] { "Editar", "Remover", "Voltar" }))
-                    {
-                        case 0:
-                            pedido = AdmPedido.Editar(pedido);
-                            break;
-                        case 1:
-                            AdmPedido.Remover(pedido, out removido);
-                            break;
-                        default:
-                            onLoop = false;
-                            break;
-                    }
-                } while (onLoop && !removido);
-            }
+                    Item? item = ServItem.Read(id);
+                    if (item != null)
+                        line +=
+                            $"\tId:{item.Id}\t" +
+                            $"Nome:{item.Nome}\t" +
+                            $"Descr:{item.Descricao}\t" +
+                            $"R${item.Valor}\n";
+                }
+                switch (Program.Menu("As informações do pedido selecionado são:\n\n" +
+                line + '\n' +
+                "O que deseja fazer?", new string[] { "Editar", "Remover", "Voltar" }))
+                {
+                    case 0:
+                        pedido = AdmPedido.Editar(pedido);
+                        break;
+                    case 1:
+                        AdmPedido.Remover(pedido, out removido);
+                        break;
+                    default:
+                        onLoop = false;
+                        break;
+                }
+            } while (onLoop && !removido);
+
         }
 
         private static Pedido Editar(Pedido pedido)
@@ -101,7 +100,7 @@ namespace Trabalho.Consumo
 
                         Restaurante escolhido = ServRestaurante.Browse()[Program.Menu("Escolha o restaurante para mostrar os itens.", restaurantes.ToArray())];
 
-                        List<string> temp = new List<string>(escolhido.Cardapio.Count);
+                        List<string> temp = new List<string>(ServItem.Browse(escolhido).Count);
                         foreach (Item item in ServItem.Browse(escolhido))
                             temp.Add(
                                 $"Nome:{item.Nome}\t" +
