@@ -29,13 +29,13 @@ namespace Trabalho.Repositorio
         public static TPessoa? Update(ulong id, TPessoa instancia)
         {
             TPessoa? original = Read(id);
-            int index = FakeDB<TPessoa>.Lista.IndexOf(original);
             if (original != null)
             {
+                int index = FakeDB<TPessoa>.Lista.IndexOf(original);
                 instancia.Id = original.Id;
                 FakeDB<TPessoa>.Lista[index] = instancia;
             }
-            return original;
+            return Read(id);
         }
         public static TPessoa? Delete(ulong id)
         {

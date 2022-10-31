@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Specialized;
-using Trabalho.Dominio;
+﻿using Trabalho.Dominio;
 using Trabalho.Servico;
 
 namespace Trabalho.Consumo
@@ -70,7 +68,6 @@ namespace Trabalho.Consumo
 
             bool onLoop = true;
             bool removido = false;
-            Console.WriteLine();
             do
             {
                 switch (Program.Menu("As informações da pessoa selecionada são:\n\n" +
@@ -145,6 +142,7 @@ namespace Trabalho.Consumo
                 Console.WriteLine("Antigo valor: " + temp2[i]);
                 Console.Write("Novo "+temp[i]);
                 temp[i] = Console.ReadLine();
+
             }
             do
             {
@@ -164,8 +162,8 @@ namespace Trabalho.Consumo
                 string.IsNullOrEmpty(temp[4]) ? pessoa.Senha : temp[4],
                 string.IsNullOrEmpty(temp[5]) ? pessoa.Cpf : temp[5]);
             editado.Pedidos = pessoa.Pedidos;
-            ServPessoa<Fisica>.Edit(pessoa.Id, editado);
-            pessoa = ServPessoa<Fisica>.Read(pessoa.Id);
+            
+            pessoa = ServPessoa<Fisica>.Edit(pessoa.Id, editado);
 
             if (pessoa == editado) Console.WriteLine("Informações atualizadas com sucesso.");
             else Console.WriteLine("Houve um erro ao atualizar as informações.");

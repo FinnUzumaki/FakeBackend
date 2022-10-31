@@ -21,6 +21,10 @@ namespace Trabalho.Servico
         {
             return RepoItem.Read(id);
         }
+        public static Item? Read(string nome)
+        {
+            return RepoItem.Read(nome);
+        }
         public static Item? Edit(ulong id, Item instancia)
         {
             return RepoItem.Update(id, instancia);

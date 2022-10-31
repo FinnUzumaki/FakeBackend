@@ -1,5 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using Trabalho.Dominio;
+﻿using Trabalho.Dominio;
 using Trabalho.Servico;
 
 namespace Trabalho.Consumo
@@ -42,7 +41,6 @@ namespace Trabalho.Consumo
 
             bool onLoop = true;
             bool removido = false;
-            Console.WriteLine();
             do
             {
                 string line = "";
@@ -139,7 +137,8 @@ namespace Trabalho.Consumo
 
             if (terminado == true)
             {
-                pedido.MudarItens(itens);
+                Pedido editado = new Pedido(ServPessoa<Fisica>.Read(pedido.IdPessoa), itens);
+                ServPedido.Edit(pedido.Id, editado);
                 Console.WriteLine("Edição completada com sucesso.");
             }
             else Console.WriteLine("Edição cancelada com sucesso.");

@@ -23,15 +23,18 @@ namespace Trabalho.Repositorio
             return FakeDB<Pedido>.Lista;
         }
 
+
+        //não utilizado
         public static Pedido? Update(ulong id, Pedido instancia)
         {
             Pedido? original = Read(id);
             if (original != null)
             {
+                int index = FakeDB<Pedido>.Lista.IndexOf(original);
                 instancia.Id = original.Id;
-                original = instancia;
+                FakeDB<Pedido>.Lista[index] = instancia;
             }
-            return original;
+            return Read(id);
         }
         public static Pedido? Delete(ulong id)
         {

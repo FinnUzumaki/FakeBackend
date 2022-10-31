@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Trabalho.Dominio;
+﻿using Trabalho.Dominio;
 using Trabalho.Servico;
 
 namespace Trabalho.Consumo
@@ -56,7 +51,7 @@ namespace Trabalho.Consumo
 
             bool onLoop = true;
             bool removido = false;
-            Console.WriteLine();
+
             do
             {
                 switch (Program.Menu("As informações da Empresa selecionada são:\n\n" +
@@ -176,8 +171,7 @@ namespace Trabalho.Consumo
                 string.IsNullOrEmpty(temp[4]) ? pessoa.Senha : temp[4],
                 string.IsNullOrEmpty(temp[5]) ? pessoa.Cnpj : temp[5]);
 
-            ServPessoa<Juridica>.Edit(pessoa.Id, editado);
-            pessoa = ServPessoa<Juridica>.Read(pessoa.Id);
+            pessoa = ServPessoa<Juridica>.Edit(pessoa.Id, editado);
 
             if (pessoa == editado) Console.WriteLine("Informações atualizadas com sucesso.");
             else Console.WriteLine("Houve um erro ao atualizar as informações.");
@@ -310,18 +304,23 @@ namespace Trabalho.Consumo
                         if (ServRestaurante.Delete(selecionado.Id) == selecionado) Console.WriteLine("Restaurante deletado com sucesso.");
                         else Console.WriteLine("Houve um erro ao deletar o restaurante.");
                         Console.ReadKey(true);
+                        
+                        bool vazio = ServRestaurante.Browse(pessoa).Count == 0;
+                        do
+                        {
+                            if (vazio)
+                                switch (Program.Menu("Esse era o ultimo restaurante da empresa, deseja adicionar outro ou deletar a empresa?", new string[] { "Adicionar", "Deletar" }))
+                                {
+                                    default:
+                                        AdicionarRestaurante(pessoa);
+                                        break;
+                                    case 1:
+                                        removido = true;
+                                        ServPessoa<Juridica>.Delete(pessoa.Id);
+                                        return;
+                                }
 
-                        if(ServRestaurante.Browse(pessoa).Count == 0) 
-                            switch(Program.Menu("Esse era o ultimo restaurante da empresa, deseja adicionar outro ou deletar a empresa?", new string[] {"Adicionar", "Deletar"}))
-                            {
-                                default:
-                                    AdicionarRestaurante(pessoa);
-                                    break;
-                                case 1:
-                                    removido = true;
-                                    ServPessoa<Juridica>.Delete(pessoa.Id);
-                                    return;
-                            }
+                        } while (vazio);
                         break;
                     default:
                         repeat = true;

@@ -1,4 +1,5 @@
-﻿using Trabalho.Dominio;
+﻿using System;
+using Trabalho.Dominio;
 using Trabalho.FakeDB;
 
 namespace Trabalho.Repositorio
@@ -32,10 +33,11 @@ namespace Trabalho.Repositorio
             Restaurante? original = Read(id);
             if (original != null)
             {
+                int index = FakeDB<Restaurante>.Lista.IndexOf(original);
                 instancia.Id = original.Id;
-                original = instancia;
+                FakeDB<Restaurante>.Lista[index] = instancia;
             }
-            return original;
+            return Read(id);
         }
         public static Restaurante? Delete(ulong id)
         {

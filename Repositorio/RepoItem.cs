@@ -18,6 +18,11 @@ namespace Trabalho.Repositorio
             return FakeDB<Item>.Lista.Find(instancia => instancia.Id == id);
         }
 
+        public static Item? Read(string nome)
+        {
+            return FakeDB<Item>.Lista.Find(instancia => instancia.Nome == nome);
+        }
+
         public static List<Item> ReadAll(ulong id)
         {
             return FakeDB<Item>.Lista.FindAll(instancia => instancia.IdRestaurante == id);
@@ -36,10 +41,11 @@ namespace Trabalho.Repositorio
             Item? original = Read(id);
             if (original != null)
             {
+                int index = FakeDB<Item>.Lista.IndexOf(original);
                 instancia.Id = original.Id;
-                original = instancia;
+                FakeDB<Item>.Lista[index] = instancia;
             }
-            return original;
+            return Read(id);
         }
         public static Item? Delete(ulong id)
         {

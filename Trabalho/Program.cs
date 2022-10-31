@@ -83,8 +83,10 @@ class Program
                         switch (Menu("Menu de Restaurantes, o que deseja fazer?", new string[] { "Listar", "Achar" }))
                         {
                             case 0:
+                                AdmRestaurante.Listar();
                                 break;
                             case 1:
+                                AdmRestaurante.Achar();
                                 break;
                             default:
                                 onSecond = false;
@@ -100,8 +102,10 @@ class Program
                         switch (Menu("Menu de Itens, o que deseja fazer?", new string[] { "Listar", "Achar"}))
                         {
                             case 0:
+                                AdmItem.Listar();
                                 break;
                             case 1:
+                                AdmItem.Achar();
                                 break;
                             default:
                                 onSecond = false;

@@ -13,6 +13,10 @@ namespace Trabalho.Servico
         {
             return RepoRestaurante.Read(id);
         }
+        public static Restaurante? Read(string nome)
+        {
+            return RepoRestaurante.Read(nome);
+        }
         public static Restaurante? Edit(ulong id, Restaurante instancia)
         {
             return RepoRestaurante.Update(id, instancia);
